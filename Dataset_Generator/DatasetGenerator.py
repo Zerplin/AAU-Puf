@@ -41,3 +41,5 @@ class DatasetGenerator:
         puf = DatasetGenerator._get_arbiter_puf(input_dim, puf_seed)
         challenges = DatasetGenerator._get_challenges(input_dim, number_of_challenges, challenge_seed)
         return DatasetGenerator._get_challenge_response_pairs(puf, challenges)
+
+
