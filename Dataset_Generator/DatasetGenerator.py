@@ -29,7 +29,6 @@ class DatasetGenerator:
 
         for idx, response in np.ndenumerate(responses):
             challenge_response_list = np.array(challenges[idx].tolist() + [response])
-            print(challenge_response_list)
             challenge_response_pairs.append(challenge_response_list)
         challenge_response_pairs_df = pd.DataFrame(np.row_stack(challenge_response_pairs))
         return challenge_response_pairs_df
