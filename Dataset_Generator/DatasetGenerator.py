@@ -1,8 +1,8 @@
 # from pypuf.simulation import ArbiterPUF
 import numpy as np
-from pypuf.simulation import ArbiterPUF
-from pypuf.io import random_inputs
 import pandas as pd
+from pypuf.io import random_inputs
+from pypuf.simulation import ArbiterPUF
 
 
 class DatasetGenerator:
@@ -32,13 +32,13 @@ class DatasetGenerator:
             challenge_response_pairs.append(challenge_response_list)
         challenge_response_pairs_df = pd.DataFrame(np.row_stack(challenge_response_pairs))
         return challenge_response_pairs_df
+
     """
     returns a pandas dataframe, last element is the response, rest is the challenge bits
     """
+
     @staticmethod
     def get_arbiter_dataset(input_dim=2, puf_seed=1337, challenge_seed=1337, number_of_challenges=3):
         puf = DatasetGenerator._get_arbiter_puf(input_dim, puf_seed)
         challenges = DatasetGenerator._get_challenges(input_dim, number_of_challenges, challenge_seed)
         return DatasetGenerator._get_challenge_response_pairs(puf, challenges)
-
-
