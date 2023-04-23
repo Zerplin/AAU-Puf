@@ -9,7 +9,7 @@ def generate_chal_resp_csv():
     puf = pypuf.simulation.XORArbiterPUF(n=64, k=4, seed=1337)
 
     pypuf.metrics.reliability(puf, seed=1337).mean()
-    challenges = pypuf.io.random_inputs(n=puf.challenge_length, N=500, seed=1337)
+    challenges = pypuf.io.random_inputs(n=puf.challenge_length, N=100000, seed=1337)
     responses_mean = puf.r_eval(5, challenges).mean(axis=-1)
     crps = pypuf.io.ChallengeResponseSet(challenges, responses_mean)
 

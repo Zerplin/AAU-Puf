@@ -1,3 +1,10 @@
 numpy
 pandas
 pypuf
+tensorflow
+scikit-learn
+scikeras
+pydot
+matplotlib
+seaborn
+chainerrl
