@@ -5,7 +5,7 @@ from gym import spaces
 
 
 class PufAttackEnv(gym.Env):
-    def __init__(self, render_mode=None, data='challenge_response_10k.csv'):
+    def __init__(self, render_mode=None, data='challenge_response_100k.csv'):
         df = pd.read_csv(data)
         print(df.shape)
 
@@ -23,7 +23,7 @@ class PufAttackEnv(gym.Env):
         # self.observation_space = spaces.Dict({"agent": spaces.MultiBinary(64), "target": spaces.MultiBinary(64), })
         self.observation_space = spaces.MultiBinary(64)
 
-        self.action_space = spaces.MultiBinary(1)
+        self.action_space = spaces.Discrete(2)
         self.render_mode = None
         self.viewer = None
         self.window = None
@@ -40,11 +40,11 @@ class PufAttackEnv(gym.Env):
         # Choose the agent's location uniformly at random
         df = self._df.sample()
 
-        self._challenge = df.drop('64', axis=1).to_numpy()[0]
+        self._challenge = df.drop('64', axis=1).to_numpy().astype(np.int8)[0]
 
         # We will sample the target's location randomly until it does not coincide with the agent's location
-        self._response = df['64'].to_numpy()
-        self._previous_try = df['64'].replace([0, 1], [1, 0]).to_numpy()
+        self._response = df['64'].to_numpy().astype(np.int8)
+        self._previous_try = df['64'].replace([0, 1], [1, 0]).to_numpy().astype(np.int8)
 
         observation = self._get_obs()
         # info = self._get_info()
@@ -54,9 +54,8 @@ class PufAttackEnv(gym.Env):
 
     def step(self, action):
         # An episode is done iff the agent has reached the target
-        self._previous_try = action
-        terminated = np.array_equal(self._response, action)
+        self._previous_try = [action]
+        terminated = np.array_equal(self._response, [action])
         reward = 1 if terminated else 0  # Binary sparse rewards
-
         # return observation, reward, terminated, False, info
         return self._get_obs(), reward, terminated, {}
