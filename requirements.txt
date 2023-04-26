@@ -7,4 +7,6 @@ scikeras
 pydot
 matplotlib
 seaborn
+gym<=0.19
 chainerrl
+# rl_coach

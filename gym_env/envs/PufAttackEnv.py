@@ -20,18 +20,21 @@ class PufAttackEnv(gym.Env):
         self._df = df
         # Observations are dictionaries with the agent's and the target's location.
         # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
-        self.observation_space = spaces.Dict({"agent": spaces.MultiBinary(64), "target": spaces.MultiBinary(64), })
+        # self.observation_space = spaces.Dict({"agent": spaces.MultiBinary(64), "target": spaces.MultiBinary(64), })
+        self.observation_space = spaces.MultiBinary(64)
 
         self.action_space = spaces.MultiBinary(1)
         self.render_mode = None
+        self.viewer = None
         self.window = None
         self.clock = None
 
     def _get_obs(self):
-        return {"agent": self._challenge, "target": self._challenge}
+        # return {"agent": self._challenge, "target": self._challenge}
+        return self._challenge
 
-    def _get_info(self):
-        return {"distance": np.linalg.norm(self._response - self._previous_try, ord=1)}
+    # def _get_info(self):
+    #     return {"distance": np.linalg.norm(self._response - self._previous_try, ord=1)}
 
     def reset(self, seed=None, options=None):
         # Choose the agent's location uniformly at random
@@ -44,16 +47,16 @@ class PufAttackEnv(gym.Env):
         self._previous_try = df['64'].replace([0, 1], [1, 0]).to_numpy()
 
         observation = self._get_obs()
-        info = self._get_info()
+        # info = self._get_info()
 
-        return observation, info
+        # return observation, info
+        return observation
 
     def step(self, action):
         # An episode is done iff the agent has reached the target
         self._previous_try = action
         terminated = np.array_equal(self._response, action)
         reward = 1 if terminated else 0  # Binary sparse rewards
-        observation = self._get_obs()
-        info = self._get_info()
 
-        return observation, reward, terminated, False, info
+        # return observation, reward, terminated, False, info
+        return self._get_obs(), reward, terminated, {}
