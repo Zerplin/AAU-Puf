@@ -1,8 +1,12 @@
+import logging
+import sys
+
 import chainer
 import chainerrl
 import gym
 import numpy as np
 
+# noinspection PyUnresolvedReferences
 import gym_env
 
 env = gym.make('gym_env/PufAttack-v0')
@@ -24,8 +28,11 @@ n_actions = env.action_space.n
 print('observation size:', obs_size)
 print('num of actions:', n_actions)
 
+# Set up the logger to print info messages for understandability.
+logging.basicConfig(level=logging.INFO, stream=sys.stdout, format='')
+
 q_func = chainerrl.q_functions.FCStateQFunctionWithDiscreteAction(obs_size, n_actions, n_hidden_layers=2,
-    n_hidden_channels=64)
+                                                                  n_hidden_channels=64)
 
 # Use Adam to optimize q_func. eps=1e-2 is for stability.
 optimizer = chainer.optimizers.Adam(eps=1e-2)
@@ -50,15 +57,9 @@ phi = lambda x: x.astype(np.float32, copy=False)
 agent = chainerrl.agents.DoubleDQN(q_func, optimizer, replay_buffer, gamma, explorer, replay_start_size=500,
                                    update_interval=1, target_update_interval=100, phi=phi)
 
-# Set up the logger to print info messages for understandability.
-import logging
-import sys
-
-logging.basicConfig(level=logging.INFO, stream=sys.stdout, format='')
-
-chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=2000,  # Train the agent for 2000 steps
+chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=10000,  # Train the agent for 2000 steps
                                                   eval_n_steps=None,  # We evaluate for episodes, not time
-                                                  eval_n_episodes=10,  # 10 episodes are sampled for each evaluation
+                                                  eval_n_episodes=1000,  # 10 episodes are sampled for each evaluation
                                                   train_max_episode_len=200,  # Maximum length of each episode
                                                   eval_interval=1000,  # Evaluate the agent after every 1000 steps
                                                   outdir='result')  # Save everything to 'result' directory
