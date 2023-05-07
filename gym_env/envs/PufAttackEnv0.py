@@ -2,12 +2,13 @@ import gym
 import numpy as np
 from gym import spaces
 from gym.utils import seeding
-from pypuf.simulation import XORArbiterPUF
+from pypuf.simulation import ArbiterPUF
 
 
 class PufAttackEnv0(gym.Env):
     def __init__(self, render_mode=None):
-        self.puf = XORArbiterPUF(n=64, k=4, seed=1337)
+        # self.puf = XORArbiterPUF(n=64, k=4, seed=1337)
+        self.puf = ArbiterPUF(n=64, seed=1337)
 
         # Observations are dictionaries with the agent's and the target's location.
         # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).

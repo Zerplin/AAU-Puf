@@ -57,7 +57,7 @@ phi = lambda x: x.astype(np.float32, copy=False)
 agent = chainerrl.agents.DoubleDQN(q_func, optimizer, replay_buffer, gamma, explorer, replay_start_size=100,
                                    update_interval=1, target_update_interval=50, phi=phi)
 
-chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=20000,  # Train the agent for 2000 steps
+chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=10000,  # Train the agent for 2000 steps
                                                   eval_n_steps=None,  # We evaluate for episodes, not time
                                                   eval_n_episodes=500,  # 10 episodes are sampled for each evaluation
                                                   train_max_episode_len=200,  # Maximum length of each episode

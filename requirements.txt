@@ -5,6 +5,7 @@ tensorflow
 scikit-learn
 scikeras
 pydot
+graphviz
 matplotlib
 seaborn
 gym<=0.19
