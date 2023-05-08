@@ -5,21 +5,19 @@ from gym.utils import seeding
 from pypuf.simulation import ArbiterPUF
 
 # Settings
-challenge_bit_length = 64
+challenge_bit_length = 20
 seed = 1337
-M_delay_granularity = 32
+M_delay_granularity = 10
 
 
 class ArbiterPufDelayII(gym.Env):
     def __init__(self, render_mode=None):
+        self._challenge = None
         self.puf = ArbiterPUF(n=challenge_bit_length, seed=seed)
         self.puf_stage = 0
         self.accumulated_delay_delta = 0
 
-        # Observations are dictionaries with the agent's and the target's location.
-        # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
-        # self.observation_space = spaces.Dict({"agent": spaces.MultiBinary(64), "target": spaces.MultiBinary(64), })
-        self.observation_space = spaces.MultiDiscrete((challenge_bit_length * 2) + 3)
+        self.observation_space = spaces.MultiBinary(challenge_bit_length * 2 + 3)
 
         self.action_space = spaces.Discrete(M_delay_granularity)
         self.render_mode = None
@@ -34,8 +32,9 @@ class ArbiterPufDelayII(gym.Env):
 
     def reset(self, options=None):
         self.puf_stage = 0
+        self.accumulated_delay_delta = 0
         # Choose a random challenge for observation
-        self._challenge = (2 * self.np_random.randint(0, 2, (1, 64), dtype=np.int8) - 1)
+        self._challenge = (2 * self.np_random.randint(0, 2, (1, challenge_bit_length), dtype=np.int8) - 1)
         # cumulative product of the challenge for effectiveness
 
         return np.concatenate((np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0], self._challenge[0],
@@ -53,7 +52,6 @@ class ArbiterPufDelayII(gym.Env):
                                            [self.accumulated_delay_delta]))
         # An episode/challenge-walk is done if the agent has reached the end of the puf stages:
         if self.puf_stage == (challenge_bit_length - 1):
-            print("M=", self.accumulated_delay_delta)
             # calculate the actual action based on the accumulated delay (top half of M, action=1, otherwise a=0)
             evaluated_action = 1 if self.accumulated_delay_delta > M_delay_granularity / 2 else 0
             action_success = np.array_equal(self.puf.eval(self._challenge), [((2 * evaluated_action) - 1)])
