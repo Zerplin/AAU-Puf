@@ -20,6 +20,7 @@ print("M_granularity:",M_delay_granularity)
 class ArbiterPufDelayII(gym.Env):
     def __init__(self, render_mode=None):
         self._challenge = None
+        self.cumprod = None
         self.puf = ArbiterPUF(n=challenge_bit_length, seed=seed)
         self.puf_stage = 0
         self.accumulated_delay_delta = 0
@@ -42,10 +43,11 @@ class ArbiterPufDelayII(gym.Env):
         self.accumulated_delay_delta = 0
         # Choose a random challenge for observation
         self._challenge = (2 * self.np_random.randint(0, 2, (1, challenge_bit_length), dtype=np.int8) - 1)
+        self.cumprod = np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0]
         # cumulative product of the challenge for effectiveness
 
-        return np.concatenate((np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0],
-                               [self._challenge[0][self.puf_stage]], [self.puf_stage], [self.accumulated_delay_delta]))
+        return np.concatenate((self.cumprod,
+                               [self.cumprod[self.puf_stage]], [self.puf_stage], [self.accumulated_delay_delta]))
 
     def step(self, action):
         # Update
@@ -54,7 +56,7 @@ class ArbiterPufDelayII(gym.Env):
 
         terminated = False
         reward = 0
-        next_observation = np.concatenate((np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0], [self._challenge[0][self.puf_stage]], [self.puf_stage],
+        next_observation = np.concatenate((self.cumprod, [self.cumprod[self.puf_stage]], [self.puf_stage],
                                            [self.accumulated_delay_delta]))
         # An episode/challenge-walk is done when the agent has reached the end of the puf stages:
         if self.puf_stage == (challenge_bit_length - 1):
