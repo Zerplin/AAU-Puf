@@ -50,10 +50,10 @@ class ArbiterPufDelayII(gym.Env):
         next_observation = np.concatenate((np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0],
                                            self._challenge[0], [self._challenge[0][self.puf_stage]], [self.puf_stage],
                                            [self.accumulated_delay_delta]))
-        # An episode/challenge-walk is done if the agent has reached the end of the puf stages:
+        # An episode/challenge-walk is done when the agent has reached the end of the puf stages:
         if self.puf_stage == (challenge_bit_length - 1):
             # calculate the actual action based on the accumulated delay (top half of M, action=1, otherwise a=0)
-            evaluated_action = 1 if self.accumulated_delay_delta > M_delay_granularity / 2 else 0
+            evaluated_action = 1 if self.accumulated_delay_delta >= M_delay_granularity / 2 else 0
             action_success = np.array_equal(self.puf.eval(self._challenge), [((2 * evaluated_action) - 1)])
             reward = 1 if action_success else 0
             terminated = True
