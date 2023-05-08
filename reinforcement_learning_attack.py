@@ -9,7 +9,7 @@ import numpy as np
 # noinspection PyUnresolvedReferences
 import gym_env
 
-env = gym.make('gym_env/PufAttack-v0')
+env = gym.make('gym_env/ArbiterPufDelayII-v0')
 print('observation space:', env.observation_space)
 print('action space:', env.action_space)
 
@@ -17,6 +17,7 @@ obs = env.reset()
 print('initial observation:', obs)
 
 action = env.action_space.sample()
+print("Action test:", action)
 obs, r, done, info = env.step(action)
 print('next observation:', obs)
 print('reward:', r)
