@@ -24,6 +24,8 @@ print('reward:', r)
 print('done:', done)
 print('info:', info)
 
+print(f'{env.observation_space=}')
+
 obs_size = env.observation_space.shape[0]
 n_actions = env.action_space.n
 print('observation size:', obs_size)

@@ -31,11 +31,13 @@ class PufAttackEnv0(gym.Env):
 
         # Choose the agent's location uniformly at random
         self._challenge = (2 * self.np_random.randint(0, 2, (1, 64), dtype=np.int8) - 1)
-        return np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0]
+        # return np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0]
+        return self._challenge[0]
 
     def step(self, action):
         # An episode is done iff the agent has reached the target
         terminated = np.array_equal(self.puf.eval(self._challenge), [((2 * action) - 1)])
         reward = 1 if terminated else 0  # Binary sparse rewards
         # return observation, reward, terminated, False, info
-        return np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0], reward, terminated, {}
+        # return np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0], reward, terminated, {}
+        return self._challenge[0], reward, terminated, {}

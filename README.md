@@ -41,7 +41,7 @@ nvidia-smi
 # sudo dpkg -i cuda-keyring_1.0-1_all.deb
 # rm cuda-keyring_1.0-1_all.deb
 # sudo apt update
-sudo apt install nvidia-cuda-toolkit 
+sudo apt install nvidia-cuda-toolkit
 # apt search cuda-toolkit
 # sudo apt install cuda-toolkit-11-7
 # export PATH=/usr/local/cuda-12.0/bin${PATH:+:${PATH}}
