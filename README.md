@@ -6,6 +6,9 @@ https://towardsdatascience.com/neural-network-based-attack-methods-to-break-the-
 
 https://www.server-world.info/en/note?os=Ubuntu_22.04&p=nvidia
 
+Ubuntu 22.04 LTS
+gpu.t4
+
 ```shell
 ssh ubuntu@claaudia.jupiops.net
 ```
@@ -68,4 +71,9 @@ python3 -m venv --system-site-packages ~/tensorflow
 source ~/tensorflow/bin/activate
 pip3 install --upgrade tensorflow
 python3 -c "import tensorflow as tf;print(tf.reduce_sum(tf.random.normal([1000, 1000])))"
+```
+
+```shell
+pip install cupy-cuda11x
+python -m cupyx.tools.install_library --library nccl --cuda 11.x
 ```
