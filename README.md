@@ -66,11 +66,17 @@ sudo apt install nvidia-cudnn python3-pip python3-dev python3-venv gcc g++ make
 sudo shutdown -r now
 ```
 
+Test the installation
+
 ```shell
 python3 -m venv --system-site-packages ~/tensorflow
 source ~/tensorflow/bin/activate
 pip3 install --upgrade tensorflow
 python3 -c "import tensorflow as tf;print(tf.reduce_sum(tf.random.normal([1000, 1000])))"
+```
+
+```shell
+sudo apt -y install graphviz
 ```
 
 ```shell
