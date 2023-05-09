@@ -74,7 +74,7 @@ phi = lambda x: x.astype(np.float32, copy=False)
 
 # Now create an agent that will interact with the environment.
 agent = chainerrl.agents.DoubleDQN(q_func, optimizer, replay_buffer, gamma, explorer, replay_start_size=100,
-                                   update_interval=1, target_update_interval=50, phi=phi)
+                                   update_interval=1, target_update_interval=50, phi=phi) # add gpu=0 to use gpu
 
 chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=10000000,  # Train the agent for 1000000 steps
                                                   eval_n_steps=None,  # We evaluate for episodes, not time
