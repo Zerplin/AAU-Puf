@@ -60,8 +60,9 @@ phi = lambda x: x.astype(np.float32, copy=False)
 agent = chainerrl.agents.DoubleDQN(q_func, optimizer, replay_buffer, gamma, explorer, replay_start_size=100,
                                    update_interval=1, target_update_interval=50, phi=phi)
 
-chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=1000000,  # Train the agent for 2000 steps
+chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=10000000,  # Train the agent for 1000000 steps
                                                   eval_n_steps=None,  # We evaluate for episodes, not time
-                                                  eval_n_episodes=500,  # 500 challenges are sampled for each evaluation
+                                                  eval_n_episodes=10000,  # 1000 challenges sampled for each evaluation
                                                   eval_interval=100000,  # Evaluate the agent after every 1000 steps
-                                                  outdir='result')  # Save everything to 'result' directory
+                                                  successful_score=0.99,  # early stopping if mean is > 99%
+                                                  outdir='result64')  # Save everything to 'result' directory

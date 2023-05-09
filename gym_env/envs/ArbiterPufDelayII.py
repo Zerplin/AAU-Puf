@@ -7,14 +7,14 @@ from gym.utils import seeding
 from pypuf.simulation import ArbiterPUF
 
 # Settings
-challenge_bit_length = 8
+challenge_bit_length = 64
 seed = 1337
 # Use recommended granularity as presented by Ganji et al. 2016
 M_delay_granularity = 10*math.sqrt(challenge_bit_length)/2.5
 # Round to nearest even number for decision process to be correct
 M_delay_granularity = round(M_delay_granularity / 2) * 2
-print("M_granularity:",M_delay_granularity)
-#M_delay_granularity = 32
+print("M_granularity:", M_delay_granularity)
+# M_delay_granularity = 10
 
 
 class ArbiterPufDelayII(gym.Env):
@@ -47,7 +47,7 @@ class ArbiterPufDelayII(gym.Env):
         # cumulative product of the challenge for effectiveness
 
         return np.concatenate((self.cumprod,
-                               [self.cumprod[self.puf_stage]], [self.puf_stage], [self.accumulated_delay_delta]))
+                               [self._challenge[0][self.puf_stage]], [self.puf_stage], [self.accumulated_delay_delta]))
 
     def step(self, action):
         # Update
@@ -56,7 +56,7 @@ class ArbiterPufDelayII(gym.Env):
 
         terminated = False
         reward = 0
-        next_observation = np.concatenate((self.cumprod, [self.cumprod[self.puf_stage]], [self.puf_stage],
+        next_observation = np.concatenate((self.cumprod, [self._challenge[0][self.puf_stage]], [self.puf_stage],
                                            [self.accumulated_delay_delta]))
         # An episode/challenge-walk is done when the agent has reached the end of the puf stages:
         if self.puf_stage == (challenge_bit_length - 1):
