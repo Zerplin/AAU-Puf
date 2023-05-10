@@ -7,11 +7,20 @@ import chainer
 import chainerrl
 import gym
 import numpy as np
-
 # noinspection PyUnresolvedReferences
 import gym_env
 
-env = gym.make('gym_env/ArbiterPufDelayII-v0')
+# *** Settings ***
+challenge_bit_length = 8
+arbiter_seed = 1337
+M_delay_granularity = 0
+evaluation_interval = 10 ** 4
+
+outdir = 'result8'
+if not os.path.exists(outdir):
+    os.makedirs(outdir)
+
+env = gym.make('gym_env/ArbiterPufDelayII-v0', challenge_bit_length=challenge_bit_length, arbiter_seed = arbiter_seed, M_delay_granularity=M_delay_granularity)
 print('observation space:', env.observation_space)
 print('action space:', env.action_space)
 
@@ -33,10 +42,6 @@ n_actions = env.action_space.n
 print('observation size:', obs_size)
 print('num of actions:', n_actions)
 
-outdir = 'result'
-if not os.path.exists(outdir):
-    os.makedirs(outdir)
-
 # Set up the logger to print info messages for understandability.
 logging.basicConfig(level=logging.INFO, stream=sys.stdout, format='')
 
@@ -44,7 +49,7 @@ q_func = chainerrl.q_functions.FCStateQFunctionWithDiscreteAction(obs_size, n_ac
                                                                   n_hidden_channels=64)
 
 # Uncomment to use CUDA
-# q_func.to_gpu(0)
+#q_func.to_gpu(0)
 
 # Use Adam to optimize q_func. eps=1e-2 is for stability.
 optimizer = chainer.optimizers.Adam(eps=1e-3)
@@ -78,7 +83,7 @@ agent = chainerrl.agents.DoubleDQN(q_func, optimizer, replay_buffer, gamma, expl
 
 chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=10000000,  # Train the agent for 1000000 steps
                                                   eval_n_steps=None,  # We evaluate for episodes, not time
-                                                  eval_n_episodes=10000,  # 1000 challenges sampled for each evaluation
-                                                  eval_interval=100000,  # Evaluate the agent after every 1000 steps
+                                                  eval_n_episodes=10000,  # 10000 challenges sampled for each evaluation
+                                                  eval_interval=evaluation_interval,  # Evaluate the agent after x steps
                                                   successful_score=0.99,  # early stopping if mean is > 99%
                                                   outdir=outdir)  # Save everything to 'result' directory

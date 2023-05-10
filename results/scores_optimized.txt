@@ -1,0 +1,14 @@
+Challenge=20
+
+
+Challenge=8, no gpu
+Observation: [cumprod, current bit, current stage, accumulated delay]
+steps   episodes        elapsed mean    median  stdev   max     min     average_q       average_loss    n_updates
+10003   1429    59.183104515075684      0.8798  1.0     0.32521152540096937     1.0     0.0     0.8212558485673979      0.005170514123637768  9903
+20006   2858    119.1998598575592       0.9963  1.0     0.060718025889078334    1.0     0.0     0.8983726227240114      0.0018974048764859414 19906
+
+Challenge=8, gpu
+Observation: [cumprod, current bit, current stage, accumulated delay]
+steps	episodes	elapsed	mean	median	stdev	max	min	average_q	average_loss	n_updates
+10003	1429	114.77111172676086	0.85	1.0	0.3570892763373433	1.0	0.0	0.8469148463151882	0.010163360522911308	9903
+20006	2858	225.79047346115112	0.9915	1.0	0.09180736821892853	1.0	0.0	0.919413318279424	0.005576187393491925	19906
