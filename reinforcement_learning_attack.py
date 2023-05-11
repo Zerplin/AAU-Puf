@@ -16,7 +16,7 @@ arbiter_seed = 1337
 M_delay_granularity = 0
 evaluation_interval = 10 ** 4
 
-outdir = 'result8'
+outdir = 'result_x'+str(challenge_bit_length)+'_M'+str(M_delay_granularity)
 if not os.path.exists(outdir):
     os.makedirs(outdir)
 
@@ -81,7 +81,7 @@ phi = lambda x: x.astype(np.float32, copy=False)
 agent = chainerrl.agents.DoubleDQN(q_func, optimizer, replay_buffer, gamma, explorer, replay_start_size=100,
                                    update_interval=1, target_update_interval=50, phi=phi) # add gpu=0 to use gpu
 
-chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=10000000,  # Train the agent for 1000000 steps
+chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=100000000,  # Train the agent for 10 mio steps
                                                   eval_n_steps=None,  # We evaluate for episodes, not time
                                                   eval_n_episodes=10000,  # 10000 challenges sampled for each evaluation
                                                   eval_interval=evaluation_interval,  # Evaluate the agent after x steps
