@@ -4,7 +4,7 @@ import gym
 import numpy as np
 from gym import spaces
 from gym.utils import seeding
-from pypuf.simulation import ArbiterPUF
+from pypuf.simulation import ArbiterPUF, XORArbiterPUF
 
 
 class ArbiterPufDelayII(gym.Env):
@@ -20,7 +20,7 @@ class ArbiterPufDelayII(gym.Env):
         print("M_granularity:", self.M_delay_granularity)
         self._challenge = None
         self.cumprod = None
-        self.puf = ArbiterPUF(n=self.challenge_bit_length, seed=arbiter_seed)
+        self.puf = XORArbiterPUF(n=self.challenge_bit_length, seed=arbiter_seed, k=4)
         self.puf_stage = 0
         self.accumulated_delay_delta = 0
 

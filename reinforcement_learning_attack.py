@@ -12,12 +12,12 @@ import numpy as np
 import gym_env
 
 # *** Settings ***
-challenge_bit_length = 16
+challenge_bit_length = 32
 arbiter_seed = 1337
 M_delay_granularity = 2
-evaluation_interval = 10 ** 4
+evaluation_interval = 10 ** 5
 
-outdir = 'result_x' + str(challenge_bit_length) + '_M' + str(M_delay_granularity)
+outdir = 'XORresult_x' + str(challenge_bit_length) + '_M' + str(M_delay_granularity)
 if not os.path.exists(outdir):
     os.makedirs(outdir)
 
