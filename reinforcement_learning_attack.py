@@ -7,6 +7,7 @@ import chainer
 import chainerrl
 import gym
 import numpy as np
+
 # noinspection PyUnresolvedReferences
 import gym_env
 
@@ -16,11 +17,12 @@ arbiter_seed = 1337
 M_delay_granularity = 0
 evaluation_interval = 10 ** 4
 
-outdir = 'result_x'+str(challenge_bit_length)+'_M'+str(M_delay_granularity)
+outdir = 'result_x' + str(challenge_bit_length) + '_M' + str(M_delay_granularity)
 if not os.path.exists(outdir):
     os.makedirs(outdir)
 
-env = gym.make('gym_env/ArbiterPufDelayII-v0', challenge_bit_length=challenge_bit_length, arbiter_seed = arbiter_seed, M_delay_granularity=M_delay_granularity)
+env = gym.make('gym_env/ArbiterPufDelayII-v0', challenge_bit_length=challenge_bit_length, arbiter_seed=arbiter_seed,
+               M_delay_granularity=M_delay_granularity)
 print('observation space:', env.observation_space)
 print('action space:', env.action_space)
 
@@ -49,7 +51,7 @@ q_func = chainerrl.q_functions.FCStateQFunctionWithDiscreteAction(obs_size, n_ac
                                                                   n_hidden_channels=64)
 
 # Uncomment to use CUDA
-#q_func.to_gpu(0)
+# q_func.to_gpu(0)
 
 # Use Adam to optimize q_func. eps=1e-2 is for stability.
 optimizer = chainer.optimizers.Adam(eps=1e-3)
@@ -70,7 +72,7 @@ chainerrl.misc.draw_computational_graph([q_func(np.zeros_like(obs, dtype=np.floa
 
 # DQN uses Experience Replay.
 # Specify a replay buffer and its capacity.
-replay_buffer = chainerrl.replay_buffer.ReplayBuffer(capacity=5 * 10 ** 5)
+replay_buffer = chainerrl.replay_buffer.ReplayBuffer(capacity=5 * 10 ** 3)
 
 # Since observations from CartPole-v0 is numpy.float64 while
 # Chainer only accepts numpy.float32 by default, specify
@@ -78,12 +80,13 @@ replay_buffer = chainerrl.replay_buffer.ReplayBuffer(capacity=5 * 10 ** 5)
 phi = lambda x: x.astype(np.float32, copy=False)
 
 # Now create an agent that will interact with the environment.
-agent = chainerrl.agents.DoubleDQN(q_func, optimizer, replay_buffer, gamma, explorer, replay_start_size=100,
-                                   update_interval=1, target_update_interval=50, phi=phi) # add gpu=0 to use gpu
+agent = chainerrl.agents.DoubleDQN(q_func, optimizer, replay_buffer, gamma, explorer, replay_start_size=1000,
+                                   update_interval=1, target_update_interval=500, phi=phi)  # add gpu=0 to use gpu
 
 chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=100000000,  # Train the agent for 10 mio steps
                                                   eval_n_steps=None,  # We evaluate for episodes, not time
                                                   eval_n_episodes=10000,  # 10000 challenges sampled for each evaluation
+                                                  train_max_episode_len=200,  # Maximum length of each episode
                                                   eval_interval=evaluation_interval,  # Evaluate the agent after x steps
                                                   successful_score=0.99,  # early stopping if mean is > 99%
                                                   outdir=outdir)  # Save everything to 'result' directory
