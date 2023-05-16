@@ -11,4 +11,5 @@ seaborn
 gym<=0.19
 pyglet<=1.5.27
 chainerrl
-# rl_coach
+chainer
+keras

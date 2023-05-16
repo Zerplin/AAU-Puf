@@ -14,7 +14,6 @@ class PufAttackEnv0(gym.Env):
         # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
         # self.observation_space = spaces.Dict({"agent": spaces.MultiBinary(64), "target": spaces.MultiBinary(64), })
         self.observation_space = spaces.MultiBinary(64)
-
         self.action_space = spaces.Discrete(2)
         self.render_mode = None
         self.viewer = None
@@ -27,17 +26,16 @@ class PufAttackEnv0(gym.Env):
         return [seed]
 
     def reset(self, options=None):
-        # We need the following line to seed self.np_random
-
+        self._tries = 0
         # Choose the agent's location uniformly at random
         self._challenge = (2 * self.np_random.randint(0, 2, (1, 64), dtype=np.int8) - 1)
-        # return np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0]
-        return self._challenge[0]
+        return np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0]  # return self._challenge[0]
 
     def step(self, action):
+        self._tries += 1
         # An episode is done iff the agent has reached the target
         terminated = np.array_equal(self.puf.eval(self._challenge), [((2 * action) - 1)])
-        reward = 1 if terminated else 0  # Binary sparse rewards
+        reward = (1 / self._tries) if terminated else 0
         # return observation, reward, terminated, False, info
-        # return np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0], reward, terminated, {}
-        return self._challenge[0], reward, terminated, {}
+        return np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[
+            0], reward, terminated, {}  # return self._challenge[0], reward, terminated, {}

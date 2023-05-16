@@ -4,12 +4,12 @@ import sys
 
 import chainer
 import chainerrl
-from chainerrl import policies
-from chainerrl.agents import a3c
-from chainerrl.agents.a3c import A3C, A3CModel
 import gym
 import numpy as np
 from chainerrl import links
+from chainerrl import policies
+from chainerrl.agents import a3c
+from chainerrl.agents.a3c import A3C
 
 # noinspection PyUnresolvedReferences
 import gym_env
@@ -49,7 +49,7 @@ class A3CFFSoftmax(chainer.ChainList, a3c.A3CModel):
 
 model = A3CFFSoftmax(env.observation_space.shape[0], env.action_space.n)
 # GPU?
-#model.to_gpu(0)
+# model.to_gpu(0)
 optimizer = chainer.optimizers.Adam(eps=1e-3)
 optimizer.setup(model)
 agent = A3C(model, optimizer, t_max=24, gamma=0.95, beta=0.1, phi=lambda x: x.astype(np.float32, copy=False))
