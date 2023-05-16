@@ -15,10 +15,10 @@ from chainerrl import links
 import gym_env
 
 # *** Settings ***
-challenge_bit_length = 64
+challenge_bit_length = 16
 arbiter_seed = 1337
 M_delay_granularity = 2
-evaluation_interval = 10 ** 5
+evaluation_interval = 10 ** 4
 
 outdir = 'result_A3C_x' + str(challenge_bit_length) + '_M' + str(M_delay_granularity)
 if not os.path.exists(outdir):
@@ -37,7 +37,7 @@ logging.basicConfig(level=logging.INFO, stream=sys.stdout, format='')
 class A3CFFSoftmax(chainer.ChainList, a3c.A3CModel):
     """An example of A3C feedforward softmax policy."""
 
-    def __init__(self, ndim_obs, n_actions, hidden_sizes=(200, 200)):
+    def __init__(self, ndim_obs, n_actions, hidden_sizes=(2, 64)):
         self.pi = policies.SoftmaxPolicy(
             model=links.MLP(ndim_obs, n_actions, hidden_sizes))
         self.v = links.MLP(ndim_obs, 1, hidden_sizes=hidden_sizes)
@@ -52,11 +52,11 @@ model = A3CFFSoftmax(env.observation_space.shape[0], env.action_space.n)
 #model.to_gpu(0)
 optimizer = chainer.optimizers.Adam(eps=1e-3)
 optimizer.setup(model)
-agent = A3C(model, optimizer, t_max=5, gamma=0.99, beta=0.1, phi=lambda x: x.astype(np.float32, copy=False))
+agent = A3C(model, optimizer, t_max=24, gamma=0.95, beta=0.1, phi=lambda x: x.astype(np.float32, copy=False))
 
 chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=100000000,  # Train the agent for 10 mio steps
                                                   eval_n_steps=None,  # We evaluate for episodes, not time
-                                                  eval_n_episodes=10000,  # 10000 challenges sampled for each evaluation
+                                                  eval_n_episodes=1000,  # 10000 challenges sampled for each evaluation
                                                   eval_interval=evaluation_interval,  # Evaluate the agent after x steps
                                                   successful_score=0.99,  # early stopping if mean is > 99%
                                                   outdir=outdir)  # Save everything to 'result' directory
