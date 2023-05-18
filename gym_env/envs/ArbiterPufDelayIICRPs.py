@@ -44,11 +44,12 @@ class ArbiterPufDelayIICRPs(gym.Env):
         self.accumulated_delay_delta = 0
         # Choose a random challenge for observation
         self._challenge = self._df.sample()
-        self.cumprod = np.cumprod(np.fliplr(self._challenge), axis=1, dtype=np.int8)[0]
+        self.cumprod = np.cumprod(np.fliplr(self._challenge.drop('64', axis=1)), axis=1, dtype=np.int8)[0]
         # cumulative product of the challenge for effectiveness
 
+        current_bit = self._challenge.drop('64', axis=1).to_numpy()[0][self.puf_stage]
         return np.concatenate((self.cumprod,
-                               [self._challenge.drop('64', axis=1)[self.puf_stage]], [self.puf_stage], [self.accumulated_delay_delta]))
+                               [current_bit], [self.puf_stage], [self.accumulated_delay_delta]))
 
     def step(self, action):
         # Update
@@ -57,7 +58,8 @@ class ArbiterPufDelayIICRPs(gym.Env):
 
         terminated = False
         reward = 0
-        next_observation = np.concatenate((self.cumprod, [self._challenge.drop('64', axis=1)[self.puf_stage]], [self.puf_stage],
+        current_bit = self._challenge.drop('64', axis=1).to_numpy()[0][self.puf_stage]
+        next_observation = np.concatenate((self.cumprod, [current_bit], [self.puf_stage],
                                            [self.accumulated_delay_delta]))
         # An episode/challenge-walk is done when the agent has reached the end of the puf stages:
         if self.puf_stage == (self.challenge_bit_length - 1):
