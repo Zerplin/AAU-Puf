@@ -12,7 +12,7 @@ import numpy as np
 import gym_env
 
 # *** Settings ***
-challenge_bit_length = 16
+challenge_bit_length = 64
 arbiter_seed = 1337
 M_delay_granularity = 2
 evaluation_interval = 10 ** 4
@@ -21,7 +21,7 @@ outdir = 'result_x' + str(challenge_bit_length) + '_M' + str(M_delay_granularity
 if not os.path.exists(outdir):
     os.makedirs(outdir)
 
-env = gym.make('gym_env/ArbiterPufDelayII-v0', challenge_bit_length=challenge_bit_length, arbiter_seed=arbiter_seed,
+env = gym.make('gym_env/ArbiterPufDelayIICRPs-v0',
                M_delay_granularity=M_delay_granularity)
 print('observation space:', env.observation_space)
 print('action space:', env.action_space)
@@ -85,7 +85,7 @@ agent = chainerrl.agents.DoubleDQN(q_func, optimizer, replay_buffer, gamma, expl
 
 chainerrl.experiments.train_agent_with_evaluation(agent, env, steps=100000000,  # Train the agent for 10 mio steps
                                                   eval_n_steps=None,  # We evaluate for episodes, not time
-                                                  eval_n_episodes=10000,  # 10000 challenges sampled for each evaluation
+                                                  eval_n_episodes=1000,  # 10000 challenges sampled for each evaluation
                                                   train_max_episode_len=200,  # Maximum length of each episode
                                                   eval_interval=evaluation_interval,  # Evaluate the agent after x steps
                                                   successful_score=0.99,  # early stopping if mean is > 99%
