@@ -12,17 +12,16 @@ import numpy as np
 import gym_env
 
 # *** Settings ***
-challenge_bit_length = 16
+challenge_bit_length = 32
 arbiter_seed = 1337
-M_delay_granularity = 2
+M_delay_granularity = 0
 evaluation_interval = 10 ** 4
 
 outdir = 'result_x' + str(challenge_bit_length) + '_M' + str(M_delay_granularity)
 if not os.path.exists(outdir):
     os.makedirs(outdir)
 
-env = gym.make('gym_env/ArbiterPufDelayII-v0', challenge_bit_length=challenge_bit_length, arbiter_seed=arbiter_seed,
-               M_delay_granularity=M_delay_granularity)
+env = gym.make('gym_env/ArbiterPufDelayII-v0')
 print('observation space:', env.observation_space)
 print('action space:', env.action_space)
 
