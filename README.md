@@ -32,6 +32,7 @@ ssh jupiops@claaudia.jupiops.net
 
 ```shell
 sudo deluser --remove-home ubuntu
+sudo timedatectl set-timezone Europe/Copenhagen
 sudo apt update
 # apt search nvidia-driver
 sudo apt install nvidia-driver-515-server
